@@ -1,20 +1,21 @@
-import { api,LightningElement,wire } from 'lwc';
-import getTimesheetByProjectId from  '@salesforce/apex/TimesheetController.getTimesheetByProjectId';
-import { CurrentPageReference } from 'lightning/navigation';
+import { api, wire } from "lwc";
+import getTimesheetByProjectId from "@salesforce/apex/TimesheetController.getTimesheetByProjectId";
+import LightningModal from "lightning/modal";
+export default class TimesheetList extends LightningModal {
+  @api projectId;
 
-export default class TimesheetList extends LightningElement {
-    @api projectId;
+  timesheets;
 
-    timesheets;
-
-    @wire(getTimesheetByProjectId, { projectId: '$projectId' })
-    wiredProjects({ error, data }) {
-      if (data) {
-        this.timesheets = data;
-      } else if (error) {
-        console.error('Error retrieving Timesheets:', error);
-      }
+  @wire(getTimesheetByProjectId, { projectId: "$projectId" })
+  wiredProjects({ error, data }) {
+    if (data) {
+      this.timesheets = data;
+    } else if (error) {
+      console.error("Error retrieving Timesheets:", error);
     }
+  }
 
-
+  closeModal() {
+    this.dispatchEvent(new CustomEvent("closeModal"));
+  }
 }
